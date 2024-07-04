@@ -7,6 +7,14 @@ import (
 	"strings"
 )
 
+var locationMap = DarkWoodMap{
+	Name:        "Dark Wood",
+	Description: "You are in the gate of the dark woods. Type 'look' to see the surroundings.",
+	Locations: []Location{
+		{Name: "Forest", Description: "You are in the dark woods."},
+	},
+}
+
 func main() {
 	fmt.Println(`Welcome to Dark Wood 🌳🌲
 You are a brave adventurer in the Dark Woods. You must find the Onepiece to unlock its power.
@@ -18,6 +26,7 @@ You can also quit the game using the command: quit. Good luck!
 	reader := bufio.NewReader(os.Stdin)
 	name, _ := reader.ReadString('\n')
 	fmt.Println("Nice to meet you,", name)
+	displayMap()
 
 	for {
 		fmt.Println("Enter Command:")
@@ -38,7 +47,7 @@ func processCommand(command string, name string) {
 	fmt.Println("Processing command:", command)
 	switch command {
 	case "look":
-		fmt.Printf("You are in the dark woods, %s.\n", name)
+		fmt.Printf("You are at the gate of darkwood, %s.\n", name)
 	case "north":
 		fmt.Println("You moved north.")
 	case "south":
@@ -48,6 +57,10 @@ func processCommand(command string, name string) {
 	case "west":
 		fmt.Println("You moved west.")
 	default:
-		fmt.Println("I don't know what to do")
+		fmt.Println("I dont understand your command, please try again.")
 	}
+}
+
+func displayMap() {
+	fmt.Printf("You are in the %s, %s.\n", locationMap.Name, locationMap.Description)
 }
