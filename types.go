@@ -1,31 +1,20 @@
 package main
 
 type Game struct {
-	StartingLocation Location
-	Player           Player
-}
-
-type GameMap struct {
-	Name        string
-	Description string
-	Locations   []Location
+	CurrentLocation *Location
+	Player          Player
+	Locations       map[string]*Location
 }
 
 type Player struct {
-	Name           string
-	PlayerLocation *Location
-	Inventory      []Item
+	Name      string
+	Inventory []Item
 }
 
 type Location struct {
 	Name        string
 	Description string
-}
-
-type Room struct {
-	Name        string
-	Description string
-	Exits       map[string]Location
+	Exits       map[string]*Location
 }
 
 type Item struct {
@@ -34,24 +23,35 @@ type Item struct {
 }
 
 func NewGame() *Game {
-	startingLocation := &Location{
-		Name: "Start",
-		Description: `Welcome to Dark Wood 🌳🌲
-		You are a brave adventurer in the Dark Woods. You must find the Onepiece to unlock its power.
-		You can move around the forest using the commands: north, south, east, west.
-		You can also look around using the command: look.
-		You can also quit the game using the command: quit. Good luck!
-		----Starting Game-----`,
+	// Create locations
+	start := &Location{
+		Name:        "Start",
+		Description: `You are at the gate of the Darkwoods.`,
+		Exits:       make(map[string]*Location),
 	}
 
-	player := Player{
-		Name:           "Danish",
-		PlayerLocation: startingLocation,
+	forest := &Location{
+		Name:        "Forest",
+		Description: "You are in a dense, dark forest. The trees loom ominously above you.",
+		Exits:       make(map[string]*Location),
 	}
 
-	return &Game{
-		StartingLocation: *startingLocation,
-		Player:           player,
+	// Connect locations
+	start.Exits["north"] = forest
+	forest.Exits["south"] = start
+
+	// Create game
+	game := &Game{
+		CurrentLocation: start,
+		Player: Player{
+			Name:      "", // We'll set this in main.go
+			Inventory: []Item{},
+		},
+		Locations: map[string]*Location{
+			"Start":  start,
+			"Forest": forest,
+		},
 	}
 
+	return game
 }
